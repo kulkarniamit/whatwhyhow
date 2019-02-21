@@ -35,157 +35,92 @@ local host machine clean (with no ruby/package dependencies)
 * Sign up for a [Docker Hub](https://hub.docker.com/) account
 
 ### Steps to create a docker image 
-1. According to [Official jekyll docs](https://jekyllrb.com/docs/), first step is to install a full Ruby development environment. 
- > However, I've had troubles in the past managing these ruby versions and their dependencies. So, I chose to do that in a safe, disposable and reproducible environment: **Docker**
+1. Create a [`Dockerfile`](https://docs.docker.com/engine/reference/builder/) and 
+copy the below commands into the file
+> Docker can build images automatically by reading the instructions from a Dockerfile. 
+A Dockerfile is a text document that contains all the commands a user could call on the 
+command line to assemble an image. Using docker build users can create an automated 
+build that executes several command-line instructions in succession.
 
-    Just pick a nice and clean Ubuntu image and install the dependencies
+    ```
+	# Fetch the latest Ubuntu
+	FROM ubuntu:latest
+	
+	# Install dependencies
+	RUN apt-get update && \
+	apt-get install -y vim git sudo curl tree ruby-full build-essential zlib1g-dev && \
+	apt-get clean
+	
+	# Create a user named 'alice'
+	RUN useradd -ms /bin/bash alice
+	RUN echo 'alice:my_secure_password' | chpasswd
+	
+	# Provide sudo privileges to new user
+	RUN usermod -aG sudo alice && cat /etc/group
+	
+	RUN gem install jekyll bundler
+	
+	# Switch to the new user
+	USER alice
+	# Switch the directory to home directory
+	WORKDIR /home/alice
+	
+	# Follow jekyll setup instructions
+	RUN echo '# Install Ruby Gems to ~/gems' >> ~/.bashrc
+	RUN echo 'export GEM_HOME="$HOME/gems"' >> ~/.bashrc
+	RUN echo 'export PATH="$HOME/gems/bin:$PATH"' >> ~/.bashrc
+	RUN . ~/.bashrc
+	
+	# Add alias for quick commands
+	RUN echo 'alias be="bundle exec jekyll serve -H 0.0.0.0"' >> ~/.bashrc
+	
+	# Install bundle
+	# RUN sudo gem install jekyll bundler
+	
+	# Set environment variables
+	ENV LANG=en_US.UTF-8
+	
+	# Optional vim options
+	RUN echo "set expandtab" >> ~/.vimrc
+	RUN echo "set tabstop=4" >> ~/.vimrc
+	RUN echo "set shiftwidth=4" >> ~/.vimrc
+	RUN echo "set laststatus=2" >> ~/.vimrc
+	RUN echo "set statusline=%F\ %=L:%l/%L\ %c\ (%p%%)"  >> ~/.vimrc
+	
+	# Set git config variables
+	RUN git config --global user.name "<your_username>"
+	RUN git config --global user.email "<your_email_address>"
+    ```
+
+2. Build a docker image so that it can be used in future without polluting your machine
+   <br/>**Keep your Docker Hub username handy for this step**
+
+   _Why Docker though?_
+
+   I've had troubles in the past managing these ruby versions and their dependencies on 
+my host machine. So, I choose to work in a safe, disposable and reproducible environment
+provided by Docker
+
+	```bash
+	# Build the docker image
+    # -t : Name and optionally a tag in the 'name:tag' format
+	# "jekyll-environment" : Any easy to remember name for your image
+	$ docker build -t <dockerhub_username>/jekyll-environment:v1.0 .
+	...
+	$ docker images
+	REPOSITORY                                  TAG                 IMAGE ID                CREATED             SIZE
+	<dockerhub_username>/jekyll-environment     v1.0              <Your image ID>        2 seconds ago          475MB
+	ubuntu                                     latest              47b19964fb50            7 days ago           88.1MB
+	```
+
+3. Now we're all set to push our new image to the [Docker registry (Docker Hub)](https://docs.docker.com/registry/)
 
     ```bash
-    # Pull the latest ubuntu docker image from a remote registry and execute /bin/bash
-    # -i : Interactive
-    # -t : Allocate a pseudo-TTY
-    $ docker run -it ubuntu:latest /bin/bash
-    Unable to find image 'ubuntu:latest' locally
-    latest: Pulling from library/ubuntu
-    6cf436f81810: Pull complete
-    987088a85b96: Pull complete
-    b4624b3efe06: Pull complete
-    d42beb8ded59: Pull complete
-    Digest: sha256:7a47ccc3bbe8a451b500d2b53104868b46d60ee8f5b35a24b41a86077c650210
-    Status: Downloaded newer image for ubuntu:latest
-    
-    # Install the required dependencies
-    root@ea131367a290:/# apt-get update && apt-get install -y ruby-full build-essential zlib1g-dev
-    Hit:1 http://archive.ubuntu.com/ubuntu bionic InRelease
-    Hit:2 http://security.ubuntu.com/ubuntu bionic-security InRelease
-    Hit:3 http://archive.ubuntu.com/ubuntu bionic-updates InRelease
-    Hit:4 http://archive.ubuntu.com/ubuntu bionic-backports InRelease
-    Reading package lists... Done
-    Reading package lists... Done
-    Building dependency tree
-    Reading state information... Done
-    ...
-    ...
-    Updating certificates in /etc/ssl/certs...
-    0 added, 0 removed; done.
-    Running hooks in /etc/ca-certificates/update.d...
-    done.
-    ```
-
-2. Create a user so that you don't end up using root for all operations in your container
-
-    ```
-    # Create a user
-    # -m : Create home directory
-    # -s : new user's login shell
-    # 'alice' : username (can be any valid name) 
-    root@ea131367a290:/# useradd -m -s /bin/bash alice
-    
-    # Change new user's password
-    root@ea131367a290:/# passwd alice
-    Enter new UNIX password:
-    Retype new UNIX password:
-    passwd: password updated successfully
-    
-    # Make sure home directory has been created
-    root@ea131367a290:/# ls -ld /home/alice/
-    drwxr-xr-x 2 alice alice 4096 Feb 13 20:43 /home/alice/
-    ```
-
-3. Provide sudo privileges to your new user just in case it's required for some operation (Feel free to skip this step)
-
-    ```
-    # Install 'sudo' package and add 'alice' to 'sudo' group
-    # -a : Add the user to the supplementary group
-    # -G : A list of supplementary groups
-    root@ea131367a290:/# apt-get install sudo && usermod -aG sudo alice && cat /etc/group|grep alice
-    Reading package lists... Done
-    Building dependency tree
-    Reading state information... Done
-    The following NEW packages will be installed:
-      sudo
-    0 upgraded, 1 newly installed, 0 to remove and 3 not upgraded.
-    Need to get 428 kB of archives.
-    After this operation, 1765 kB of additional disk space will be used.
-    Get:1 http://archive.ubuntu.com/ubuntu bionic/main amd64 sudo amd64 1.8.21p2-3ubuntu1 [428 kB]
-    Fetched 428 kB in 1s (440 kB/s)
-    debconf: delaying package configuration, since apt-utils is not installed
-    Selecting previously unselected package sudo.
-    (Reading database ... 28441 files and directories currently installed.)
-    Preparing to unpack .../sudo_1.8.21p2-3ubuntu1_amd64.deb ...
-    Unpacking sudo (1.8.21p2-3ubuntu1) ...
-    Setting up sudo (1.8.21p2-3ubuntu1) ...
-    sudo:x:27:alice
-    alice:x:1000:
-    ```
-
-4. Make sure your new user can perform sudo operations (Optional). I'll just install my favorite tools `vim`, `git` and `tree` to test
-
-    ```
-    # Switch to your new user 'alice'
-    root@ea131367a290:/# su alice
-    To run a command as administrator (user "root"), use "sudo <command>".
-    See "man sudo_root" for details.
-    
-    alice@ea131367a290:/$ sudo apt-get install -y vim tree git
-    [sudo] password for alice:
-    Reading package lists... Done
-    Building dependency tree
-    Reading state information... Done
-    ...
-    ...
-    Processing triggers for libc-bin (2.27-3ubuntu1) ...
-    ```
-
-5. Getting back to [Official jekyll docs](https://jekyllrb.com/docs/), follow the remaining steps
-
-    ```
-    alice@ea131367a290:/$ echo '# Install Ruby Gems to ~/gems' >> ~/.bashrc
-    alice@ea131367a290:/$ echo 'export GEM_HOME="$HOME/gems"' >> ~/.bashrc
-    alice@ea131367a290:/$ echo 'export PATH="$HOME/gems/bin:$PATH"' >> ~/.bashrc
-    alice@ea131367a290:/$ source ~/.bashrc
-    alice@ea131367a290:/$ gem install jekyll bundler
-    Fetching: public_suffix-3.0.3.gem (100%)
-    Successfully installed public_suffix-3.0.3
-    Fetching: addressable-2.6.0.gem (100%)
-    Successfully installed addressable-2.6.0    
-    ...
-    Installing ri documentation for bundler-2.0.1
-    Done installing documentation for bundler after 2 seconds
-    26 gems installed
-    ```
-
-6. Commit the changes to a new Docker image instance so that it can be used in future without polluting your machine. 
-   Keep your Docker Hub username handy for this step
-
-    ```
-    # Open a new terminal on your host machine
-    $ docker ps -a
-    CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
-    ea131367a290        ubuntu:latest       "/bin/bash"         19 minutes ago      Up 19 minutes                           flamboyant_chaplygin
-    
-    # Commit the instance to an image
-    # -m : Commit message
-    # -a : Author
-    # ea131367a290 : Container ID (this will be different for your instance)
-    # "ubuntu-jekyll-builder" : Any easy to remember name for your image
-    $ docker commit -m "Ubuntu with jekyll" -a "<Your name>" ea131367a290 <Dockerhub username>/ubuntu-jekyll-builder:v1.0
-    sha256:02bffde04717df21831b5e57bc98bbc8a936f2a4ef8056335a4ec3358996aa34
-    
-    $ docker images
-    REPOSITORY                                   TAG                 IMAGE ID                  CREATED             SIZE
-    <Dockerhub username>/ubuntu-jekyll-builder   v1.0                <Your image ID>        2 seconds ago          475MB
-    ubuntu                                       latest              47b19964fb50            7 days ago           88.1MB
-    ```
-    
-7. Now we're all set to push our new image to the [Docker registry (Docker Hub)](https://docs.docker.com/registry/)
-
-    ```
-    $ docker login -u <Dockerhub_username>
+    $ docker login -u <dockerhub_username>
     Password:
     Login Succeeded
-    $ docker push <Dockerhub_username>/ubuntu-jekyll-builder
-    The push refers to repository [docker.io/thecuriouscoder/ubuntu-jekyll-builder]
+    $ docker push <dockerhub_username>/jekyll-environment:v1.0
+    The push refers to repository [docker.io/<dockerhub_username>/jekyll-environment]
     dd91e0d35530: Pushed
     4b7d93055d87: Mounted from library/ubuntu
     663e8522d78b: Mounted from library/ubuntu
@@ -202,26 +137,15 @@ local host machine clean (with no ruby/package dependencies)
 
     No. I highly recommend it though.
 
-8. Let's pull that image and start building our blog
+4. Let's pull that image and start building our blog
 
-    ```
+    ```bash
     # Run the docker image as a container and execute /bin/bash
     # -i : Interactive
     # -t : Allocate a pseudo-TTY
     # -p : Publish a container's port(s) to the host (hostport:containerport)
-    $ docker run -it -p 12345:4000 <dockerhub_username>/ubuntu-jekyll-builder:v1.0 /bin/bash
-    Unable to find image '<dockerhub_username>/ubuntu-jekyll-builder:v1.0' locally
-    v1.0: Pulling from <dockerhub_username>/ubuntu-jekyll-builder
-    6cf436f81810: Pull complete
-    987088a85b96: Pull complete
-    b4624b3efe06: Pull complete
-    d42beb8ded59: Pull complete
-    3ab24ee09b3f: Pull complete
-    Digest: sha256:64b18af7f49768d3c347b88acb0780093e45f40a0a30e5e78debd9d514f07044
-    Status: Downloaded newer image for <dockerhub_username>/ubuntu-jekyll-builder:v1.0
-
-    # Switch to 'alice' account
-    root@02cd90036873:/# su alice
+    $ docker run -it -p 12345:4000 <dockerhub_username>/jekyll-environment:v1.0 /bin/bash
+    ...
     alice@02cd90036873:/$ bundle --version
     Bundler version 2.0.1
 
@@ -235,16 +159,14 @@ local host machine clean (with no ruby/package dependencies)
     
     _What does that `docker` command do?_
 
-    It runs `ubuntu-jekyll-builder` in interactive mode (`-i`) with a psuedo terminal allocated (`-t`) and runs `/bin/bash` on container.  We bind our host port `12345` to port `4000` of docker container for running jekyll blog locally. **Please do not forget the tag `v1.0` associated with your image**
+    It runs `jekyll-environment` in interactive mode (`-i`) with a psuedo terminal allocated (`-t`) and runs `/bin/bash` on container.  We bind our host port `12345` to port `4000` of docker container for running jekyll blog locally. **Please do not forget the tag `v1.0` associated with your image while running the command**
 
 ### Steps to create jekyll blog
 
 1. Create a new jekyll powered blog on your local machine (inside docker)
 
-    ```
+    ```bash
     alice@02cd90036873:/$ cd ~
-    alice@02cd90036873:~$ ls
-    gems
     $ jekyll new my-blog
     Running bundle install in /home/alice/my-blog...
   Bundler: Fetching gem metadata from https://rubygems.org/...........
@@ -263,7 +185,7 @@ New jekyll site installed in /home/alice/my-blog.
     
 2. Let's do a quick test drive of your brand new [`minima`](https://github.com/jekyll/minima) themed jekyll blog
 
-    ```
+    ```bash
     alice@02cd90036873:~/my-blog$ jekyll help serve |grep "\-H"
         -H, --host [HOST]  Host to bind to
 
@@ -281,6 +203,9 @@ New jekyll site installed in /home/alice/my-blog.
 
     ```
     
+    You could also use the command `be` to execute `bundle exec jekyll serve -H 0.0.0.0`
+    > NOTE: Remember that we added our alias to the `~/.bashrc` in `Dockerfile`
+
     _What's that `0.0.0.0`?_
 
     Allow the server to listen to incoming connections from any IP address
@@ -307,11 +232,11 @@ New jekyll site installed in /home/alice/my-blog.
     
 ### Steps to publish jekyll blog on Github
 
-1. Create an empty repository (let's say `my-blog`) on [Github](github.com)
+1. Create an empty repository (let's say `my-blog`) on [Github](https://github.com)
 
 2. Initialize empty local Git repository
 
-    ```
+    ```bash
     # Initialize an empty local git repository
     alice@02cd90036873:~/my-blog$ git init
     Initialized empty Git repository in /home/alice/my-blog/.git/
@@ -340,7 +265,7 @@ New jekyll site installed in /home/alice/my-blog.
 3. Now it's time to commit and push your branch to your remote. 
    Create a link/shortcut to your remote repository created on [Github](https://github.com)
 
-    ```
+    ```bash
     alice@02cd90036873:~/my-blog$ git remote add origin <paste your git repository URL>
     
     # URL is of the form : https://github.com/<github_username>/<repository_name>.git
@@ -388,6 +313,39 @@ New jekyll site installed in /home/alice/my-blog.
     https://<github_username>.github.io/<github_repo_name>/
     ```
 
+6. Check the [status of your github pages](https://developer.github.com/v3/repos/pages/) build using:
+
+   ```bash
+	alice@02cd90036873:~/$ curl -u <github_username> https://api.github.com/repos/<github_username>/<github_repo_name>/pages/builds/latest
+	Enter host password for user '<github_username>':
+	{
+	  "url": "https://api.github.com/repos/<github_username>/<github_repo_name>/pages/builds/<build_id>",
+	  "status": "built",
+    ...
+    ...
+	}
+   ```
+   You could also trigger a build on github pages manually using
+   a preview API.
+   > NOTE: This endpoint is currently available for developers to preview. 
+    During the preview period, the API may change without advance notice.
+
+   ```bash
+   alice@02cd90036873:~/$ curl -u <github_username> -X POST -H "accept: application/vnd.github.mister-fantastic-preview+json" https://api.github.com/repos/<github_username>/<github_repo_name>/pages/builds
+	Enter host password for user '<github_username>':
+	{
+	  "status": "queued",
+	  "url": "https://api.github.com/repositories/<ID>/pages/builds/latest"
+	}
+    ```
+   In JSON responses, `status` can be one of:
+     * `null`, which means the site has yet to be built
+     * `queued`, which means the build has been requested but not yet begun
+     * `building`, which means the build is in progress
+     * `built`, which means the site has been built
+     * `errored`, which indicates an error occurred during the build
+   
+
 ### Next steps
 
 * Since you have a safe remote copy of your blog on Github, you don't have to retain/save 
@@ -397,15 +355,14 @@ New jekyll site installed in /home/alice/my-blog.
   * Pull the same docker image from your Docker Hub
   * Run an instance of the docker image by binding port `4000` on docker container to any 
     unassigned local port on your host
-  * Switch to the user you created
-  * Navigate to user's home directory (or anywhere you want)
   * 
-    ```
-    git clone https://github.com/<github_username>/<github_repo_name>.git
+    ```bash
+  $ git clone https://github.com/<github_username>/<github_repo_name>.git
     ```
   * Update your site contents
   * Test it locally using `$ bundle exec jekyll serve -H 0.0.0.0`
-  * `git push origin master`
+  * Add your changes and commit
+  * `$ git push origin master`
 
 ### FAQ
 
