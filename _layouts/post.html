@@ -23,6 +23,7 @@ layout: default
   {%- if site.disqus.shortname -%}
     {%- include disqus_comments.html -%}
   {%- endif -%}
-
+  <!-- A shortcut to top of article -->
+  {% include go-to-top-link.html %}
   <a class="u-url" href="{{ page.url | relative_url }}" hidden></a>
 </article>

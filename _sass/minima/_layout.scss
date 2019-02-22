@@ -255,3 +255,35 @@
     }
   }
 }
+
+/**
+ * Post footer
+ */
+footer.footer {
+    margin: 0.5em;
+    text-align: center;
+}
+
+footer > a {
+    font-size: 3em;
+    text-decoration: none;
+}
+
+footer > a:visited, 
+ footer > a:link {
+    color: #999;
+}
+footer > a:hover {
+    color: #111;
+}
+
+/**
+ * Go to top button
+ */
+div#go-to-top {
+    width: 2em;
+    margin: 0 auto;
+    padding: 5px;
+    font-size: 2em;
+    text-align: center;
+}
