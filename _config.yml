@@ -19,7 +19,7 @@ author: Amit Kulkarni
 description: >- # this means to ignore newlines until "baseurl:"
   101, Security, Science, Network, Operating System, UNIX, tools, Open source, Github, Questions, How-to, Jekyll, Opinions, Thoughts, Answers, and more...
 baseurl: "/whatwhyhow" # the subpath of your site, e.g. /blog
-url: "" # the base hostname & protocol for your site, e.g. http://example.com
+url: "https://kulkarniamit.github.io" # the base hostname & protocol for your site, e.g. http://example.com
 # twitter_username: jekyllrb
 rss: RSS
 github_username:  kulkarniamit
@@ -80,6 +80,9 @@ defaults:
     values:
       layout: "post"
       is_collection: true
+
+#sass:
+#  style: compressed
 
 # Exclude from processing.
 # The following items will not be processed, by default. Create a custom list

@@ -15,8 +15,12 @@
 
     {%- if page.is_collection != true -%}
     {%- include footer.html -%}
+    {%- else -%}
+    <footer class="footer">
+      {% include social-icons.html %}
+    </footer>
     {%- endif -%}
-
+    
   </body>
 
 </html>

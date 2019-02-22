@@ -4,6 +4,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="shortcut icon" type="image/png" href="{{site.baseurl}}/favicon.png">
   <link rel="stylesheet" type="text/css" href="https://cdn.rawgit.com/dreampulse/computer-modern-web-font/master/fonts.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   {%- seo -%}
   <link rel="stylesheet" href="{{ "/assets/main.css" | relative_url }}">
   {%- feed_meta -%}
@@ -11,4 +12,17 @@
     {%- include google-analytics.html -%}
   {%- endif -%}
   <script type="text/javascript" src="{{ "/assets/js/gfm-hack.js"|relative_url }}"/></script>
+ 
+  {% if page.twitter_shareable %}
+  <meta name="twitter:card" content="summary" />
+<!--
+  https://developer.twitter.com/en/docs/tweets/optimize-with-cards/overview/summary.html
+  <meta name="twitter:site" content="@flickr" />
+  <meta name="twitter:card" content="summary_large_image">
+-->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="{{page.title}}" />
+  <meta name="twitter:description" content="{{page.description}}" />
+  <meta name="twitter:image" content="{{page.twitter_image}}" />
+  {% endif %}
 </head>

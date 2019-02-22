@@ -1,11 +1,14 @@
 ---
 title: Create jekyll blog and publish on Github
 description: Create a dockerized 'minima' themed jekyll blog and publish on Github
+image: https://jekyllrb.com/img/octojekyll.png
 imgdir: /assets/images/howto/create-and-publish-jekyll-blog-on-github/
-tags: docker jekyll github blog minima
+twitter_shareable: true
+twitter_image: https://jekyllrb.com/img/octojekyll.png
+hashtags: docker, jekyll, github, blog, minima
 ---
 
-### Preface
+### Introduction
 Jekyll is a super cool easy-to-use website generator that builds static blogs 
 to be hosted on GitHub Pages. Jekyll provides [layouts](https://jekyllrb.com/docs/step-by-step/04-layouts/) 
 (to create base layouts), [includes](https://jekyllrb.com/docs/step-by-step/05-includes/)
