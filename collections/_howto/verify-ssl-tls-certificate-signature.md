@@ -1,12 +1,12 @@
 ---
-title: Verify SSL/TLS Certificate
+title: Verify SSL/TLS Certificate Signature
 description: Learn how to download an SSL/TLS certificate and verify the
   signature using simple OpenSSL commands
 published: true
-image: /assets/images/howto/verify-ssl-tls-certificate/padlock.png
-imgdir: /assets/images/howto/verify-ssl-tls-certificate/
+image: /assets/images/howto/verify-ssl-tls-certificate-signature/padlock.png
+imgdir: /assets/images/howto/verify-ssl-tls-certificate-signature/
 twitter_shareable: true
-twitter_image: /assets/images/howto/verify-ssl-tls-certificate/padlock.png
+twitter_image: /assets/images/howto/verify-ssl-tls-certificate-signature/padlock.png
 hashtags: digitalcertificates, tls, certificate, signatures, x.509, openssl
 ---
 
@@ -20,7 +20,7 @@ https or tls, you may have wondered
 
 This article lets us take the reins of browser and be the verification guard
 using `openssl` tools. Let's try to understand what goes behind the scenes of
-a browser's certificate verification.
+a browser's certificate signature verification.
 
 ### Prerequisites
 
