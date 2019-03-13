@@ -513,12 +513,12 @@ _"Hey Bob!<br/> I lost my previous email account password and I think it may be
 
 > Now please don't ramble about why Bob never texted/called Alice to confirm 
 > this email switch. Just assume Alice left her phone at home or her phone 
-> hanged due to an update and Bob couldn't reach her to verify. Why did she 
-> Alice leave her phone at home? How would I know? May be she was fed up of
+> hanged due to an update and Bob couldn't reach her to verify. Why did Alice 
+> leave her phone at home? How would I know? May be she was fed up of
 > charging her phone every 3-4 hours! May be her phone manufacturer sent
 > her an update to deliberately slow down her phone! (Alice hasn't purchased
 > the latest shiny $1000 phone yet). It could be anything, stop trying to 
-> save Alice and think of a solution
+> find loopholes and think of a solution instead
 
 What if Alice and Bob both exchanged their public keys securely. Now Alice
 will take a hash of the message, encrypt the hash using her own private key and
