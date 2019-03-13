@@ -421,9 +421,8 @@ need to possess the following:
 
    `-p`: plain hexdump style
 
-   We need to use the combination `-r` ``-p` to read plain hexadecimal dumps without line number information and without a 
-
-   particular column layout.
+   We need to use the combination `-r` `-p` to read plain hexadecimal dumps 
+   without line number information and without a particular column layout.
 
    **OR**
 
