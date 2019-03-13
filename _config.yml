@@ -46,14 +46,18 @@ collections:
           title: "How to"
           output: true
           sequence: 2
-  attack:
-          title: "Attacks"
+#  attack:
+#          title: "Attacks"
+#          output: true
+#          sequence: 3
+#  random:
+#          title: "Random"
+#          output: true
+#          sequence: 4
+  security:
+          title: "Security"
           output: true
-          sequence: 3
-  random:
-          title: "Random"
-          output: true
-          sequence: 4
+          sequence: 5
 
 defaults:
   - scope:
@@ -80,6 +84,13 @@ defaults:
     values:
       layout: "post"
       is_collection: true
+  - scope:
+      path: ""
+      type: "security"
+    values:
+      layout: "post"
+      is_collection: true
+
 
 #sass:
 #  style: compressed
