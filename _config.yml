@@ -25,6 +25,8 @@ rss: RSS
 github_username:  kulkarniamit
 github_repo: whatwhyhow
 
+google_analytics: UA-136227765-1
+
 # Build settings
 markdown: kramdown
 kramdown:
