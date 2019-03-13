@@ -16,13 +16,31 @@
   {% if page.twitter_shareable %}
   <meta name="twitter:card" content="summary" />
 <!--
-  https://developer.twitter.com/en/docs/tweets/optimize-with-cards/overview/summary.html
   <meta name="twitter:site" content="@flickr" />
   <meta name="twitter:card" content="summary_large_image">
 -->
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="{{page.title}}" />
   <meta name="twitter:description" content="{{page.description}}" />
+
+    {% assign link = {{page.twitter_image}} %}
+    {% capture link_location %}{% if link contains 'http' or link contains 'https' %}remote{% else %}local{% endif %}{% endcapture%}
+
+    {% if link_location == "remote" %}
   <meta name="twitter:image" content="{{page.twitter_image}}" />
+    {% else %}
+  <meta name="twitter:image" content="{{site.url}}{{site.baseurl}}{{page.twitter_image}}" />
+    {% endif %}
+
+    {% if page.twitter_image_license %}
+  <!--
+    License: {{ page.twitter_image_license }}
+  -->
+    {% endif %}
+    {% if page.twitter_image_author %}
+  <!--
+    Author: {{ page.twitter_image_author }}
+  -->
+    {% endif %}
   {% endif %}
 </head>
