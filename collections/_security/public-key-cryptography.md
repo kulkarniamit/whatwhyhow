@@ -22,26 +22,82 @@ hashtags: rsa, pki, cryptography, asymmetric-cryptography, public-private, opens
 * [Why do we need Public key cryptography?](#why-do-we-need-public-key-cryptography)
 * [What is RSA?](#what-is-rsa)
 * [Generate RSA public-private key pair](#generate-rsa-public-private-key-pair)
+* [DER, BER, PEM, ASN.1, X.509](#der-ber-pem-asn1-x509)
 * [Public key cryptography for encryption](#public-key-cryptography-for-encryption)
 * [Public cryptography for signing (digital signatures)](#public-cryptography-for-signing-digital-signatures)
 * [Additional resources](#additional-resources)
 
 ### Introduction
-Public key cryptography is used interchangeably with asymmetric cryptography; 
-They both denote the exact same thing and are used synonymously.
-Public key cryptography (Asymmetric Cryptography) involves a pair 
-of keys known as a 'public key' and a 'private key'. Public key is 
-published and the corresponding private key is kept secret. Data 
-that is encrypted with the public key can be decrypted only with the 
-corresponding private key.
+* Public key cryptography is used interchangeably with asymmetric cryptography;
+    They both denote the exact same thing and are used synonymously
+* Public key cryptography (Asymmetric Cryptography) involves a pair of keys 
+    known as a ***public key*** and a ***private key***
+* Public key is published and the corresponding private key is kept secret
+* Data that is encrypted with the public key can be decrypted only with the 
+corresponding private key
+
+##### Before we get started, I've an honest question. We've seen these _keys_ as something like this:<br/>
+<div style="text-align: center;">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/f/f0/Orange_blue_public_key_cryptography_en.svg" height="50%" 
+     width="50%"/>
+</div>
+Image credits: [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Orange_blue_public_key_cryptography_en.svg)
+
+_**What exactly is this key? Is it some random bytes? How does a key look like? 
+(Enough of visual representations!)**_<br/>
+
+They're just numbers. Normal regular positive integers. However, they have
+very large number of digits.
+Wait no more, here is what a public and private key look like:
+
+```bash
+n = 2245944838578036526972583396448350551747843525119085870865837921064767862499
+    5080698551937025022186301711535333198664798188326624882731471433305369620049
+    9826334796240761090584167633432656265188647836110242553974179632080636660650
+    9553493655928231758714894373780618182801915185644831114898975050468805964483
+    6329930121323954250397233617250981771294652550666361750227000001163814082240
+    1213802131566884820219731159073117564151470164344800066475416917008836012841
+    6453999969381586227449891026404194967505712083340252860306641679640365774257
+    8899951399542059233818410379611323656680403814378526886221231167479535046352
+    291836079
+
+e = 65537
+d = 5438629261063741044456551032490856044103067998785402562009376048231970639160
+    6562809713481024017287426669219790021333040457870140056601378098868763579381
+    6049549600430425333410247698639891195590863353383516079706155417721242016651
+    7633389431860023804996471262324856273718112516011332498198992027547789898279
+    6367125516774011214449348835105146112524832528466786061288886908728901871761
+    7330798675702944198764135596823504891287070715575597029612982520978737317421
+    9386789071135476909410835408405212931007402450771425225993435533102280382944
+    3362040358826807748069982321379309636762497447239054568638341393733053187204
+    3814049
+```
+* The public key is made of the modulus *n*, and the public (or encryption) 
+exponent *e*
+* The private key is made of the modulus *n*, and the private (or decryption) 
+exponent *d*, which must be kept secret
+
+#### Wait, what? My public key looks like this...
+```bash
+$ cat id_rsa.pub
+ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAAAgQCVAbPULFe/I7ZfAr+UqGS5FR5ymxE78mlR/DZO+mJV
+TlXNR2Vt/FbCEWfIctiVWwDL2tL/y6eNlQNDu57tbwg+O7lgw5D6qz5ZaCd9WxIR2YCgcC+knHDCqnfq
+b1wShK4jCP9dGy43BWKQT7mCrGSCK3a9Chu8fNlOiYPmZNBT1Q==
+```
+Yeah, that's public key in OpenSSH format. It contains the same
+*n* and *e* information. Scroll down further and you will learn more about
+formats of public key.
 
 _**Interesting! How can I use it?**_<br/>
 Interestingly enough, there's a very high chance that you've already
-used public key cryptography. Have you booked a holiday/flight on a
-reputed travel company webstite? Have you ever purchased something from
-amazon.com? Chances are: your browser has used these keys on your behalf
-in the background while you waited for that product image to load on amazon 
-or while you mindlessly scrolled on facebook to peek into other's lives.
+used public key cryptography. 
+* Have you booked a holiday/flight on a reputed travel company webstite? 
+* Have you ever purchased something from amazon.com?
+* Did a google search?
+
+Chances are: your browser has used these keys on your behalf in the background 
+while you waited for that product image to load on amazon or while you 
+mindlessly scrolled on facebook to peek into others lives.
 Billions of people all over the planet use public key cryptography on a 
 daily basis to establish secure connections to their banks, e-commerce sites, 
 e-mail servers, and the cloud. 
@@ -51,16 +107,24 @@ _**Why History? Isn't it boring and just a collection of names, dates and events
 I used to think so too. However, history of public key cryptography has
 some valuable lessons for our present and future. It gives you the motivation 
 to solve new problems, identify patterns, and contribute to the world of 
-cryptography. DH protocol or RSA or any early protocols were answers to a 
-2000 year old (_historic_) symmetric key problem. Knowing the history and the 
-large scale impact of some historical discoveries gives you the motivation to 
-solve new problems or to improve existing solutions.
+cryptography. [Diffie-Hellman](diffie-hellman-key-exchange.html) protocol or [RSA](#what-is-rsa) 
+or any early protocols were answers to a **2000 year old (_historic_)** symmetric key problem. 
+
+>Knowing the history and the large scale impact of some historical discoveries gives you the 
+>motivation to solve new problems or to improve existing solutions.
 
 Publicly introduced by 
 [Whitfield Diffie](https://cisac.fsi.stanford.edu/people/whitfield_diffie), 
 [Martin Hellman](https://ee.stanford.edu/~hellman/) and 
-[Ralph Merkle](http://www.merkle.com/) in 1976. Mr. Merkle, Mr. Hellman and 
-Mr. Diffie played a crucial role in ending the monopoly on cryptography.
+[Ralph Merkle](http://www.merkle.com/) in 1976. They also played a crucial role 
+in ending the monopoly on cryptography. We may take it for granted now but this 
+was a crucial defining moment in the history. Imagine a tehcnically armed 
+g-o-v-e-r-n-m-e-n-t that can read emails, whatsapp messages, text messages, 
+photos, bank transactions, social life, credit card purchases, etc. It would 
+lead to an efficient version of 
+[social credit score](https://www.vox.com/the-goods/2018/11/2/18057450/china-social-credit-score-spend-frivolously-video-games)
+and that's bad. Why? Because ["Quis custodiet ipsos custodes?"](https://en.wikipedia.org/wiki/Quis_custodiet_ipsos_custodes%3F).
+Anyway, let's not digress further.
 
 Whitfield Diffie and Martin Hellman are also the recipients of 
 [ACM Turing award](https://awards.acm.org/about/2015-turing).
@@ -92,8 +156,8 @@ Clifford's school friend, [Malcolm John Williamson](https://en.wikipedia.org/wik
 had also joined GCHQ around this time, and he managed, after reading Ellis's 
 report, to come up with what we now know as the Diffie-Hellman protocol. 
 
-The story of this discovery was kept secret for a further 24 years. In 1997, 
-Clifford announced to a conference the true history of the development of 
+**The story of this discovery was kept secret for a further 24 years**. In 
+1997, Clifford announced to a conference the true history of the development of 
 public key cryptography, and various internal reports were declassified to 
 support the story. Alas, Ellis, whose original idea it had all stemmed from, 
 died a few months before the announcement.
@@ -103,36 +167,48 @@ Yes!
 * [The Possibility of Secure Non-Secret Encryption by James H.Ellis](https://www.gchq.gov.uk/sites/default/files/document_files/CESG_Research_Report_No_3006_0.pdf)
 * [A Note on 'Non-secret Encryption' by Clifford Cocks](https://www.gchq.gov.uk/sites/default/files/document_files/Cliff%20Cocks%20paper%2019731120.pdf)
 
+> For some weird reason, the full PDF doesn't load in Chrome. Works in Mozilla 
+> Firefox and Safari.
+
 _**Have you read them?**_<br/>
 Not yet, it's in my bucket list
 
 ### What's private key cryptography?
-In Private key cryptography, both parties must hold on to a matching private 
-key (or else exchange it upon transmission) to encipher and then decipher 
+In Private key cryptography, both parties must hold on to a *matching private 
+key* (or else exchange it upon transmission) to encipher and then decipher 
 plaintext. 
+
+> Basically, use the same key for encryption and decryption
+
 Famous examples: 
 * [Caesar's cipher](http://practicalcryptography.com/ciphers/caesar-cipher/)
 * [The Enigma machine](https://www.theguardian.com/technology/2014/nov/14/how-did-enigma-machine-work-imitation-game)
 
-![symmetric key cryptography]({{site.baseurl}}{{page.imgdir}}symmetric_key_cryptography.png "Symmetric Key Cryptography")
+<div style="text-align: center;">
+    <img src="{{site.baseurl}}{{page.imgdir}}symmetric_key_cryptography.png" 
+     height="75%" width="75%" title="Symmetric Key Cryptography"/>
+</div>
 
 ### Why do we need Public key cryptography?
 There is a major flaw inherent in private key cryptography. Today we 
-refer to it as key distribution. If there was any distance between the two 
-parties (which was not uncommon), you had to entrust a courier with your 
-private key or travel there to exchange it yourself. 
+refer to it as *key distribution*. If there was any distance between the two 
+parties (which is not uncommon), you had to entrust a courier with your 
+private key or travel there to exchange it yourself.
 
-In a typical situation, Alice wants to send a message to Bob, and Eve is 
-trying to eavesdrop. If Alice is sending private messages to Bob, she will 
-encrypt each one before sending it, using a separate key each time. Alice is 
-continually faced with the problem of key distribution because she has to convey
-the keys to Bob securely, otherwise he cannot decrypt the messages. One way to 
-solve the problem is for Alice and Bob to meet up once a week and exchange
-enough keys to cover the messages that might be sent during the next seven days.
-Exchanging keys in person is certainly secure, but it is inconvenient, 
-not scalable and if either Alice or Bob is sick during winter, the system 
-breaks down. Even in the digital age, private key encryption on its own 
-struggles with key distribution. 
+In a typical situation: 
+* Alice wants to send a message to Bob, and Eve is trying to eavesdrop. 
+* If Alice is sending private messages to Bob, she will encrypt each one before 
+  sending it, using a separate key each time. 
+* Alice is continually faced with the problem of key distribution 
+* One way to solve the problem is for Alice and Bob to meet up once a week and 
+  exchange enough keys to cover the messages that might be sent during the next 
+  seven days.
+* Exchanging keys in person is certainly secure, but it is inconvenient, 
+  not scalable and if either Alice or Bob is sick during winter, the system 
+  breaks down.
+
+Even in the digital age, private key encryption on its own struggles with key 
+distribution. 
 
 ##### _**How's asymmetric different from symmetric cryptography?**_
 In symmetric cryptography, unscrambling process is simply the opposite of 
@@ -140,7 +216,8 @@ scrambling. For example, the Enigma machine uses a certain key setting to
 encipher a message, and the receiver uses an identical machine in the same key 
 setting to decipher it. Both sender and receiver effectively have equivalent 
 knowledge, and they both use the same key to encrypt and decrypt. Their 
-relationship is symmetric. 
+relationship is symmetric.
+
 In an asymmetric key system, as the name suggests, the encryption key and the 
 decryption key are not identical. This distinction between encryption and 
 decryption keys is what makes an asymmetric cipher special.
@@ -148,7 +225,16 @@ In an asymmetric cipher, if Alice knows the encryption key, she can encrypt a
 message, but she cannot decrypt a message. In order to decrypt, Alice must 
 have the decryption key. 
 
-##### _**Hold on! Diffie-Hellman protocol is used for exchanging keys for symmetric cryptography. Why is DH-protocol included in Public Key Cryptography?**_
+**Hold on a minute! I just read the public key cryptography 
+  [wiki](https://en.wikipedia.org/wiki/Public-key_cryptography) article and I 
+  found this:**
+
+*"Some public key algorithms provide key distribution and secrecy 
+(e.g., Diffie-Hellman key exchange)"*
+
+**Diffie-Hellman is used to exchange a common shared key, that's symmetric! Why
+is it a public key algorithm??**
+
 Sharp observation. Diffie-Hellman protocol belongs to a public-key technology.
 It is an asymmetric technology used to negotiate symmetric keys.
 Here's the basic functionality:
@@ -165,18 +251,6 @@ Alice's private key `a` and Bob's private key `b` was kept private.
 Hence, this has the context of being a public key cryptography in which both the
 parties have a pair of public and private keys.
 
-> **Wait! Why are those keys same? The equation looks different.**
-
-> They are the same because of a property of modulo exponents
->
->(g<sup>a</sup> mod p)<sup>b</sup> mod p = g<sup>ab</sup> mod p
->
->(g<sup>b</sup> mod p)<sup>a</sup> mod p = g<sup>ab</sup> mod p
-
-The security of Diffie-Hellman protocol relies on the computational 
-intractability of finding solutions to the [Discrete Logarithm Problem (DLP)](https://www.khanacademy.org/computing/computer-science/cryptography/modern-crypt/v/discrete-logarithm-problem).
-This is a long standing problem in number theory.
-
 ##### _**While we're on DHKE, how does Diffie-Hellman Key Exchange work?**_
 When I started to write this article, I thought I could give a brief explanation
 of Diffie-Hellman Key Exchange and the discrete logarithm problem. 
@@ -186,7 +260,7 @@ and not explain how math works. It's not just modulo arithmetic and large
 numbers. It deserves it's own page and explanation.
 Here's an article dedicated to [Diffie-Hellman Key Exchange]({{site.baseurl}}/security/diffie-hellman-key-exchange.html).
 
-##### _What was the need for asymmetric encryption when DHKE solved the problem of secure symmetric key exchange?_
+##### You just said we needed asymmetric encryption because secret key distribution is a problem. But DHKE solved it right?
 DHKE is an asymmetric technology used to exchange symmetric keys. Both
 parties still had to use the same key to unlock a piece of information.
 * Imagine a bank that needs to secure transactions with customers. If there
@@ -206,9 +280,9 @@ public key cryptography for many years now.
 _**Why are we just discussing RSA? What about DSA, ECDSA, Ed25519?**_<br/>
 RSA keys are the most widely used and better known. RSA has been around longer 
 than others, and people trust it more because of the significant time it has
-spent in the open world. The longer an algorithm stays in open for academic
+spent in the open world. **The longer an algorithm stays in open for academic
 studies, strength analysis and deep scrutiny by security community, the higher
-the trust. Anyway, there is some information available in the 
+the trust**. Anyway, there is some information available in the 
 [Additional resources](#additional-resources) section for those who like 
 closure.
 
@@ -222,12 +296,8 @@ In other words, _de ≡ 1 mod φ(n)_. (`d` is the private key)
 * Distribute both parts of the public key: `n` and `e`
 * `d` is kept secret
 
-Let's keep this article light and reserve deep dives to a dedicated article.
-Please refer [this]({{site.url}}{{site.baseurl}}/security/rsa.html) article for a deep dive on RSA and the math behind it.
-
-### What is ECDSA?
-Elliptic Curve Digital Signature Algorithm (ECDSA) offers a variant of the 
-Digital Signature Algorithm (DSA) which uses elliptic curve cryptography.
+Let's keep this article light and reserve deep dives to a dedicated 
+article *(Coming soon...)*.
 
 ### Generate RSA public-private key pair
 
@@ -241,9 +311,6 @@ Generating RSA private key, 1024 bit long modulus
 .................++++++
 e is 65537 (0x010001)
 
-$ file *
-openssl_private_key.pem: PEM RSA private key
-
 $ cat openssl_private_key.pem
 -----BEGIN RSA PRIVATE KEY-----
 MIICXQIBAAKBgQDfmPMQaJba+n3P4E65x7HoHRxmwNl8STPZuIjUMTjSCLfB17FU
@@ -256,21 +323,6 @@ $ openssl rsa -in openssl_private_key.pem -pubout > openssl_public_key.pub
 writing RSA key
 
 $ cat openssl_public_key.pub
------BEGIN PUBLIC KEY-----
-MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDfmPMQaJba+n3P4E65x7HoHRxm
-wNl8STPZuIjUMTjSCLfB17FURs9k2yGVSgS24mW6bQnlHy0dW0uDOFd7PqshB/7S
-2xnP+f+90YBdvT43BKpn1VZ8qMVjGR5xvX9Y/7+I8J4XJTZBNMNXq0Jbq116fLEu
-+ylTKsdtS4ewi/U9gQIDAQAB
------END PUBLIC KEY-----
-
-# Generating public RSA key using OpenSSH
-# -y:   Read a private OpenSSH format file and print openSSH public key
-#       to stdout
-# -e:   Read a public/private OpenSSH key file and print to stdout the key 
-#       in one of the formats specified by -m option
-# -m:   Specify a key format for -i(import) or -e(export)
-# -f:   Filename of key file
-$ ssh-keygen -y -f openssl_private_key.pem -e -mpkcs8
 -----BEGIN PUBLIC KEY-----
 MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDfmPMQaJba+n3P4E65x7HoHRxm
 wNl8STPZuIjUMTjSCLfB17FURs9k2yGVSgS24mW6bQnlHy0dW0uDOFd7PqshB/7S
@@ -321,105 +373,32 @@ ssh-rsa AAAAB3N...+w==
 
 ```
 
-_**Looks like the public key formats are different for OpenSSH and OpenSSL. 
-Can I convert OpenSSH public key to OpenSSL public key 
-format (or vice versa)?**_<br/>
-Of course!
-
-```bash
-# Converting OpenSSH public key to OpenSSL public key format
-# -e:   Read a public/private OpenSSH key file and print to stdout the key 
-#       in one of the formats specified by -m option
-# -m:   Specify a key format for -i(import) or -e(export)
-# -f:   Filename of key file
-$ ssh-keygen -e -m pkcs8 -f id_rsa.pub
------BEGIN PUBLIC KEY-----
-MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDZjTG1uWYEoO35h7Me4D3R6Cms
-kvQAWf6sc1/o7SwM1CYDusi1Ihgdk7966sDDpSW1iBAZOWLNW8u8l/Av/3ziG/i8
-izrPyjYVdqBMbiDn2urgIsk0yhZkeWs93hSN46ZI4VRjDACHqYL19pntN+/z8ydW
-tRzezWz780J9lzYA+wIDAQAB
------END PUBLIC KEY-----
-
-# Converting OpenSSL public key to OpenSSH public key format
-# -f:   Filename of key file
-# -i:   Read an unencrypted private(or public key) in the format specified by
-#       -m option and print an OpenSSH compatible private (or public) key to
-#       stdout
-# -m:   Specify a key format for -i(import) or -e(export)
-$ ssh-keygen -f openssl_public_key.pub -i -mPKCS8
-ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAAAgQDfmPMQaJba+n3P4E65x7HoHRxmwNl8STPZuIjUMTjSCLfB17FURs9k2yGVSgS24mW6bQnlHy0dW0uDOFd7PqshB/7S2xnP+f+90YBdvT43BKpn1VZ8qMVjGR5xvX9Y/7+I8J4XJTZBNMNXq0Jbq116fLEu+ylTKsdtS4ewi/U9gQ==
-
-```
-
-_**I tried to use `-m PEM` and I obtained a slightly different format, 
-what's that?**_<br/>
-As you noticed, there's a slight variation in the format. Let's see what it
-looks like:
-
-```bash
-$ ssh-keygen -e -m pem -f id_rsa.pub
------BEGIN RSA PUBLIC KEY-----
-MIGJAoGBANmNMbW5ZgSg7fmHsx7gPdHoKayS9ABZ/qxzX+jtLAzUJgO6yLUiGB2T
-v3rqwMOlJbWIEBk5Ys1by7yX8C//fOIb+LyLOs/KNhV2oExuIOfa6uAiyTTKFmR5
-az3eFI3jpkjhVGMMAIepgvX2me037/PzJ1a1HN7NbPvzQn2XNgD7AgMBAAE=
------END RSA PUBLIC KEY-----
-```
-This is a PKCS#1 PEM-encoded public key. 
-Markers used to delimit the base64 encoded data:
-
-```
------BEGIN RSA PUBLIC KEY-----
-...
------END RSA PUBLIC KEY-----
-```
-
-This is different from an x.509 public key, which looks like this:
-```
------BEGIN PUBLIC KEY-----
-...
------END PUBLIC KEY-----
-```
-
-The X.509 format may be used to store keys generated using algorithms other 
-than RSA.
-
-
-_**PEM? What's that? What's DER?**_<br/>
-_**PEM**_: Privacy Enhanced Mail is a de facto file format for storing and sending 
-cryptographic keys, certificates, and other data, based on a set of IETF 
-standards defining "privacy-enhanced mail.". Because DER produces binary 
-output, it can be challenging to transmit the resulting files through systems, 
-like electronic mail, that only support ASCII. The PEM format solves this 
-problem by encoding the binary data using base64. PEM also defines a one-line 
-header, consisting of "`-----BEGIN` ", a label, and "`-----`", and a one-line 
-footer, consisting of "`-----END`", a label, and "`-----`". The label 
-determines the type of message encoded. Common labels include 
-"`CERTIFICATE`", "`CERTIFICATE REQUEST`", and "`PRIVATE KEY`".
-
+### DER, BER, PEM, ASN.1, X.509
 _**DER**_: Distinguished Encoding Rules is a restricted variant of 
 BER (Basic Encoding Rules) for producing unequivocal transfer syntax for data 
-structures described by ASN.1. DER is the same thing as BER with all but one 
-sender's options removed. DER is widely used for digital certificates such as 
-X.509.
-
-_**X.509**_: A standard defining the format of public key certificates. X.509 
-certificates are used in many Internet protocols, including TLS/SSL. An X.509 
-certificate contains a public key and an identity (a hostname, or an 
-organization, or an individual), and is either signed by a certificate 
-authority or self-signed. When a certificate is signed by a trusted certificate 
-authority, or validated by other means, someone holding that certificate can 
-rely on the public key it contains to establish secure communications with 
-another party, or validate documents digitally signed by the corresponding 
-private key.
+structures described by ASN.1(*Abstract Syntax Notation*). DER is the same 
+thing as BER with all but one sender's options removed. DER is widely used for 
+digital certificates such as X.509.
 
 _**BER**_: The format for Basic Encoding Rules specifies a self-describing and 
 self-delimiting format for encoding ASN.1 data structures. Each data element is 
 encoded as a type identifier, a length description, the actual data elements, 
 and, where necessary, an end-of-content marker. These types of encodings are 
-commonly called type-length-value or TLV encodings. This format allows a 
+commonly called type-length-value or **TLV encoding**. This format allows a 
 receiver to decode the ASN.1 information from an incomplete stream, without 
 requiring any pre-knowledge of the size, content, or semantic meaning of the 
 data.
+
+_**PEM**_: Privacy Enhanced Mail is a de facto file format for storing and 
+sending cryptographic keys, certificates, and other data, based on a set of 
+IETF[^1] standards defining "privacy-enhanced mail.". Since DER produces binary 
+output, it can be challenging to transmit the resulting files through systems, 
+like electronic mail, that only support ASCII. *The PEM format solves this 
+problem by encoding the binary data using base64[^2]*. PEM also defines a 
+one-line header, consisting of "`-----BEGIN` ", a label, and "`-----`", and a 
+one-line footer, consisting of "`-----END`", a label, and "`-----`". The label 
+determines the type of message encoded. Common labels include 
+"`CERTIFICATE`", "`CERTIFICATE REQUEST`", and "`PRIVATE KEY`".
 
 _**ASN.1**_: Abstract Syntax Notation One (ASN.1) is a standard interface 
 description language for defining data structures that can be serialized and 
@@ -430,28 +409,61 @@ computer, or anything in between. It is broadly used in telecommunications and
 computer networking, and especially in cryptography. ASN.1 is both 
 human-readable and machine-readable.
 
+_**X.509**_: A standard defining the format of public key certificates. X.509 
+certificates are used in many Internet protocols, including TLS/SSL. An X.509 
+certificate contains a public key and an identity (a hostname, or an 
+organization, or an individual), and is either signed by a certificate 
+authority or self-signed.
+
 #### _**Quick summary**_
 * DER is a concrete binary representation used as a wire format to describe 
 ASN.1 schemas
 * PEM is nothing more than a base64-encoded DER
+
+***(...yawning) To hell with it. I didn't understand a thing. What's all this 
+boring theory? I skipped over and just scrolled past all those boring words. 
+Why do I need this?***<br/>
+
+Yeah, it's kind of boring and doesn't make much sense at first. When you
+are learning *A*, *B*, *C*...*Z* for the first time, does it make much sense?
+
+*Why is this written as A and not as ![](https://upload.wikimedia.org/wikipedia/commons/7/7d/Rune-Yr.png)*<br/>
+*Why does B come after A and not after C?*<br/>
+*Why does alphabets end at Z?*<br/>
+
+However, *"A Lannister always pays his debts"* sentence makes sense now because
+you know the rules of alphabets and the way words are stitched together.
+It's pretty similar. Once you understand the format and rules for encoding
+certificates and keys, you will understand how to read certificates and keys
+using your favorite programming language/openssl.
+For now, it's just a placeholder in case you wish to refer back to this quickly
+when someone mentions *PEM/DER/ASN.1*.
 
 ### Public key cryptography for encryption
 Let's say Alice wants to send a confidential email to Bob.
 However, Eve lives in Alice's apartment and is taking network security
 course at her grad school. Whenever Eve is jobless and doesn't have any
 assignments, she intercepts messages on her network and likes to read
-others messages. Eve uses Wireshark or ettercap or some Kali linux tool.
-I am not sure since I haven't met Eve. To overcome this irritating Eve's
-eavesdropping habit, Alice calls up Bob and asks him to create a public-private
-key pair. Bob sends his public key to Alice (It's public key, so Eve 
-has most probably intercepted it already, who cares!). Since RSA public
-key encryption has limitation on message size, Alice uses a symmetric key
-and encrypts her confidential email using AES encryption. Next, Alice 
-encrypts the symmetric key using Bob's RSA public key and sends both
-the encrypted symmetric key and encrypted email to Bob. Eve intercepts
-both these messages but is unable to decrypt the email since it's encrypted
-using symmetric key and the key can only be decrypted by Bob's private key.
-<br/><br/>
+others messages. 
+
+To overcome this irritating Eve's eavesdropping habit ...
+<div style="text-align: center;">
+    <img src="{{site.baseurl}}{{page.imgdir}}alice-bob-pki.png" height="80%" 
+     width="80%"/>
+</div>
+
+>It's public key, so Eve must have probably intercepted it already, who cares! 
+
+* Since RSA public key encryption has [limitation on message size](https://www.nsoftware.com/kb/xml/09051401.rst), 
+  Alice uses a symmetric key and encrypts her confidential email using 
+  AES encryption
+* Alice *encrypts the symmetric key* using *Bob's RSA public key* and sends both 
+  the encrypted symmetric key and encrypted email to Bob
+* Eve intercepts both these messages but is unable to decrypt the email since 
+  it's encrypted using symmetric key and the key can only be decrypted by Bob's 
+  private key.
+<br/>
+
 Since Eve doesn't have access to a Quantum computer and hasn't figured out
 how to factor the primes of RSA, she's unable to read Alice's emails.
 Alice is happy and the last time I checked, Eve is reading up on 
@@ -491,14 +503,14 @@ _"At its core, PGP remains cryptographically sound, and using a few bad
 I'll let Andy from protonmail do the rest of talking : [No, PGP is not broken, not even with the Efail vulnerabilities](https://protonmail.com/blog/pgp-vulnerability-efail/)
 
 ### Public cryptography for signing (digital signatures)
-Just imagine if Eve gets an 'A' on her Network Security course and tries to fool
-around by sending an email to Bob by spoofing Alice? All she has to do is use
-Bob's public key to encrypt a random key. Encrypt an email using that random key
-and send it to Bob as Alice. Now, you may be thinking "That's impossible! How 
-can Bob not recognize Alice's email address? He already knows Alice's email 
-address is _alice@gmail.com_". Okay, what if Eve creates a new email account 
-_therealalice@gmail.com_ and sends out the following email to Bob using above
-method:
+Just imagine if Evil Eve decides to fool around by sending an email to Bob by 
+spoofing Alice? All she has to do is use Bob's public key to encrypt a random 
+key. Encrypt an email using that random key and send it to Bob as Alice. 
+
+Now, you may be thinking *"That's impossible! How can Bob not recognize Alice's 
+email address? He already knows Alice's email address is alice@gmail.com"*. 
+Okay, what if Eve creates a new email account _therealalice@gmail.com_ and 
+sends out the following email to Bob using above method:
 
 _"Hey Bob!<br/> I lost my previous email account password and I think it may be 
     hacked. So, please ignore all emails from alice@gmail.com and use my new 
@@ -520,20 +532,32 @@ _"Hey Bob!<br/> I lost my previous email account password and I think it may be
 > the latest shiny $1000 phone yet). It could be anything, stop trying to 
 > find loopholes and think of a solution instead
 
-What if Alice and Bob both exchanged their public keys securely. Now Alice
-will take a hash of the message, encrypt the hash using her own private key and
-append the result to the message. Eve can of course decrypt this hash
-using Alice's public key but hash is of no use. If Eve replaces the hash and the
-message, Bob won't be able to use Alice's public key to decrypt the hash and
-hence won't believe the message. This is how digital signatures work!
+Put on your thinking hats now. How do you approve a withdrawal from your
+bank account using your check? You have to sign it physically for the bank
+to verify and approve the withdrawal. Your signature proves to the 
+bank that you are authorizing the withdrawal. Similarly, the virtual world
+has *digital signatures*. A person can digitally sign an entity and 
+provide a proof of authorization.
+
+For the above example, Alice and Bob both exchange their public keys securely. 
+* Alice will now take a hash of the message, encrypt the hash using her own 
+private key and append the result to the message
+* Eve can of course decrypt this hash using Alice's public key but [hash is of 
+  no use](https://www.ibm.com/support/knowledgecenter/en/SSFKSJ_7.1.0/com.ibm.mq.doc/sy10510_.htm) 
+* Even If Eve replaces the hash and the message, Bob won't be able to use 
+  Alice's public key to decrypt the encrypted hash (remember Eve doesn't have
+  Alice's private key to sign a message) and hence won't believe the 
+  message
+
+This is how digital signatures work!
 
 ![Diagram illustrating how a simple digital signature is applied and verified](https://upload.wikimedia.org/wikipedia/commons/2/2b/Digital_Signature_diagram.svg "Diagram illustrating how a simple digital signature is applied and verified")
 Image source: [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Digital_Signature_diagram.svg)
 
 When Bob receives the message, he follows these steps:
 * Decrypt the signature using Alice's public key. This will yield a hash of the 
-  message. 
-* Decrypt the session key (symmetric) using his private key.
+  message
+* Decrypt the session key (symmetric) using his private key
 * Decrypt the actual message using session key
 * Generate a hash of the message
 * Check if the generated hash matches the decrypted hash from signature
@@ -541,7 +565,35 @@ When Bob receives the message, he follows these steps:
 * If there's a match, Alice is the only person on planet earth to send that 
 message since she has the private key
 
+**Food for thought**<br/>
+If you notice closely, the above arrangement begins with an assumption:
+*"Alice and Bob both exchange their public keys securely"*. 
+
+![]({{site.baseurl}}{{page.imgdir}}mitm-pki.png "Man-in-the-middle attack on PKI")
+
+What if Eve intercepts Bob's public key and replaces it with
+his own public key? Alice will use Eve's public key and encrypt
+her email encryption key. Eve will happily decrypt the email
+encryption key using her private key. Just to prevent suspicion, 
+Eve may encrypt the email encryption key again using Bob's public
+key so that it can be decrypted by Bob. Alice and Bob will happily
+continue communication without noticing the presence of Eve! Remember that
+keys are just numbers, there's no name tag. Even if there's a tag, Eve
+will just replace it.
+
+> The Remaining Problem: Authenticity of Public Keys
+
+Do we really know that a certain public key belongs to a certain person? In 
+practice, this issue is often solved with what is called *certificates*.
+
 #### Create and verify a signature using OpenSSL
+
+##### Keep the following files ready
+* Any file you wish to sign
+* A public-private key pair (refer [this](#generate-rsa-public-private-key-pair))
+  * Let's say the publickey is `publickey.pub`
+  * Let's say the private key is `private.pem`
+
 ```bash
 # Create a signature file signature.sha256 for a plaintext file foo.txt
 $ openssl dgst -sha256 -sign private.pem -out signature.sha256 foo.txt
@@ -549,8 +601,24 @@ $ file signature*
 signature.sha256: data
 
 # Verify the signature for foo.txt
-$ openssl dgst -sha256 -verify publickey -signature signature.sha256 foo.txt
+$ openssl dgst -sha256 -verify publickey.pub -signature signature.sha256 foo.txt
 Verified OK
+
+# To test verification, modify the plaintext file (Add a random character)
+$ echo "a" >> foo.txt
+
+# See if the signature matches now
+$ openssl dgst -sha256 -verify publickey -signature signature.sha256 foo.txt
+Verification Failure
+```
+Where,
+```
+dgst: perform digest operations
+-sha256: Name of a digest
+-sign filename: Digitally sign the digest using the private key in "filename"
+-out: Filename to output to
+-verify filename: Verify the signature using the public key in "filename"
+-signature: The actual signature to verify
 ```
 
 _**Can I encrypt a file with my private key and decrypt using public key?**_<br/>
@@ -560,7 +628,6 @@ public. You might as well give the file in plaintext to the world.
 
 ### Additional resources
 
-* [RSA]()
 * [Encrypt/Decrypt a file using RSA public-private key pair]({{site.url}}{{site.baseurl}}/howto/encrypt-decrypt-file-using-rsa-public-private-keys.html)
 
 * RSA, DSA, ECDSA, and Ed25519 are all used for digital signing
@@ -589,10 +656,10 @@ public. You might as well give the file in plaintext to the world.
       it way more often. Current processors for desktops and laptops are 
       ridiculously fast. It can be an issue on embedded devices
     * ECDSA is an Elliptic Curve implementation of DSA (Digital Signature 
-      Algorithm). Elliptic curve cryptography[^1] is able to provide the 
+      Algorithm). Elliptic curve cryptography[^3] is able to provide the 
       relatively the same level of security level as RSA with a smaller key
     * Ed25519 is similar to ECDSA but uses a superior curve, and it does not 
-      have the same weaknesses when weak RNGs[^2] are used as DSA/ECDSA.
+      have the same weaknesses when weak RNGs[^4] are used as DSA/ECDSA.
       There's some [conspiracy theory](http://cr.yp.to/talks/2013.05.31/slides-dan+tanja-20130531-4x3.pdf)
       as well, but that's a topic for another day.
 
@@ -601,6 +668,7 @@ public. You might as well give the file in plaintext to the world.
 * [Enc - OpenSSLWiki](https://wiki.openssl.org/index.php/Enc)
 * [openssl-rsautl](https://www.openssl.org/docs/man1.0.2/man1/rsautl.html)
 * [How PGP works](http://users.ece.cmu.edu/~adrian/630-f04/PGP-intro.html#p4)
+* [openssl-dgst](https://www.openssl.org/docs/manmaster/man1/dgst.html)
 
 ### Credits
 
@@ -612,7 +680,9 @@ public. You might as well give the file in plaintext to the world.
 
 ### Footnotes
 
-[^1]: Will be explained in detail in another article. Not here, a lot of math
+[^1]: Internet Engineering Task Force
+[^2]: base64: A scheme that represents binary data in an ASCII string format
+[^3]: Will be explained in detail in another article. Not here, a lot of math
       to be explained
 
-[^2]: Random Number Generator
+[^4]: Random Number Generator
