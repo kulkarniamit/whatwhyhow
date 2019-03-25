@@ -33,6 +33,32 @@
       </div>
     </div>
 
+    <div id="feeds-row">
+        <ul>
+            {% comment %}
+            Future enhancement
+            {% assign collections = site.collections | sort: 'sequence' %}
+            {% for collection in collections %}
+                {% if collection.label != "posts" %}
+                <li>
+                    <a href="feed/{{collection.label}}.xml">[{{collection.title}} <i class="fa fa-rss-square"></i>]</a>
+                </li>
+                {%- endif -%}
+            {% endfor %}
+            {% endcomment %}
+            <li>
+                <a href="feed/security.xml">Security <i class="fa fa-rss-square"></i>
+                </a>|
+            </li>
+            <li>
+                <a href="feed/one-zero-one.xml">101 <i class="fa fa-rss-square"></i>
+                </a>|</li>
+            <li>
+                <a href="feed/howto.xml">How-to <i class="fa fa-rss-square"></i>
+                </a></li>
+        </ul>
+    </div>
+
   </div>
 
 </footer>

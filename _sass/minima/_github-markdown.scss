@@ -663,3 +663,22 @@ Looks weird and creates a lot of extra space
   position: relative;
   border-color: #4078c0;
 }
+
+/* Additional footer row for displaying RSS */
+#feeds-row {
+    width: 90%;
+    margin: 0 auto;
+    text-align: center;
+}
+
+#feeds-row ul {
+    list-style: none;
+}
+
+#feeds-row > ul > li {
+    display: inline;
+}
+
+#feeds-row a {
+    text-decoration: none;
+}

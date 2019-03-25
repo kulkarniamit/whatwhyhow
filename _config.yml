@@ -21,7 +21,7 @@ description: >- # this means to ignore newlines until "baseurl:"
 baseurl: "/whatwhyhow" # the subpath of your site, e.g. /blog
 url: "https://kulkarniamit.github.io" # the base hostname & protocol for your site, e.g. http://example.com
 # twitter_username: jekyllrb
-rss: RSS
+#rss: RSS
 github_username:  kulkarniamit
 github_repo: whatwhyhow
 
@@ -37,6 +37,12 @@ plugins:
   - jekyll-seo-tag
   - jekyll-sitemap
 encoding: UTF-8
+
+feed:
+  collections:
+    - security
+    - one-zero-one
+    - howto
 
 collections_dir: collections
 collections:
