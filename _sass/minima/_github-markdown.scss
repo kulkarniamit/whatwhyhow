@@ -127,6 +127,8 @@
   margin-top: 15px;
   margin-bottom: 15px;
   line-height: 1.1;
+  /* Compensate for computer modern font spacing */
+  letter-spacing: -0.045em;
 }
 
 .markdown-body h1 {
