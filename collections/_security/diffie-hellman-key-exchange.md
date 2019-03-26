@@ -33,10 +33,10 @@ logarithm problem. There _was_ a
 patent [US patent 4200770](https://patents.google.com/patent/US4200770A/en) 
 for this protocol but it expired in 1997.
 
-_**Wait what?! The patent mentions "Merkle; Ralph C. (Palo Alto, CA)" as 
+**[Q]** _**Wait what?! The patent mentions "Merkle; Ralph C. (Palo Alto, CA)" as 
 an inventor. Why don't we call this diffie-hellman-merkle protocol?**_<br/>
 
-Well, Martin Hellman acknowledges it too. His paper 
+**[A]** Well, Martin Hellman acknowledges it too. His paper 
 "[AN OVERVIEW OF PUBLIC KEY CRYPTOGRAPHY](https://ee.stanford.edu/~hellman/publications/73.pdf)"
 mentions:
 _"... system in this paper has since become known as Diffie-Hellman key 
@@ -311,8 +311,8 @@ This prime number has 617 decimal digits (2048 bits).
 Now, I hope you can imagine the colossal computation required to find discrete
 logarithm of this number to the base of generator.
 
-_**Is this discrete logarithm problem always hard?**_<br/>
-No. The hardness of finding discrete logarithms depends on the groups. 
+**[Q]** _**Is this discrete logarithm problem always hard?**_<br/>
+**[A]** No. The hardness of finding discrete logarithms depends on the groups. 
 For example, a popular choice of groups for discrete logarithm based 
 crypto-systems is Z<sub>p</sub><sup>*</sup> where _p_ is a prime number. 
 However, if p-1 is a product of small primes, then the Pohlig-Hellman algorithm 
@@ -428,7 +428,8 @@ than RSA with smaller keys.
 > Elliptic Curve Cryptography needs an article for itself. I'll post a link
 to it once I write it. 
 
-_**Why should one prefer ECDHE over DHE?**_<br/>
+**[Q]** _**Why should one prefer ECDHE over DHE?**_<br/>
+**[A]**
 * ECDHE is faster, for a given security level
 * The performance ratio increases with higher security levels (e.g. a 224-bit 
 curve will give you roughly the same security as a 2048-bit plain DH key, 

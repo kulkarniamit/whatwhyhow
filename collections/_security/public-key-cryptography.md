@@ -36,17 +36,19 @@ hashtags: rsa, pki, cryptography, asymmetric-cryptography, public-private, opens
 * Data that is encrypted with the public key can be decrypted only with the 
 corresponding private key
 
-##### Before we get started, I've an honest question. We've seen these _keys_ as something like this:<br/>
+##### Before we get started, most of us have seen _keys_ as something like this:<br/>
 <div style="text-align: center;">
     <img src="https://upload.wikimedia.org/wikipedia/commons/f/f0/Orange_blue_public_key_cryptography_en.svg" height="50%" 
      width="50%"/>
 </div>
 Image credits: [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Orange_blue_public_key_cryptography_en.svg)
 
-_**What exactly is this key? Is it some random bytes? How does a key look like? 
+We may have some specific questions like:<br/>
+
+**[Q]** _**What exactly is this key? Is it some random bytes? How does a key look like? 
 (Enough of visual representations!)**_<br/>
 
-They're just numbers. Normal regular positive integers. However, they have
+**[A]** They're just numbers. Normal regular positive integers. However, they have
 very large number of digits.
 Wait no more, here is what a public and private key look like:
 
@@ -77,19 +79,20 @@ exponent *e*
 * The private key is made of the modulus *n*, and the private (or decryption) 
 exponent *d*, which must be kept secret
 
-#### Wait, what? My public key looks like this...
+**[Q]** _**Wait, what? My public key looks like this...**_
 ```bash
 $ cat id_rsa.pub
 ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAAAgQCVAbPULFe/I7ZfAr+UqGS5FR5ymxE78mlR/DZO+mJV
 TlXNR2Vt/FbCEWfIctiVWwDL2tL/y6eNlQNDu57tbwg+O7lgw5D6qz5ZaCd9WxIR2YCgcC+knHDCqnfq
 b1wShK4jCP9dGy43BWKQT7mCrGSCK3a9Chu8fNlOiYPmZNBT1Q==
 ```
-Yeah, that's public key in OpenSSH format. It contains the same
+
+**[A]** Yeah, that's public key in OpenSSH format. It contains the same
 *n* and *e* information. Scroll down further and you will learn more about
 formats of public key.
 
-_**Interesting! How can I use it?**_<br/>
-Interestingly enough, there's a very high chance that you've already
+**[Q]** _**How can I use it?**_<br/>
+**[A]** Interestingly enough, there's a very high chance that you've already
 used public key cryptography. 
 * Have you booked a holiday/flight on a reputed travel company webstite? 
 * Have you ever purchased something from amazon.com?
@@ -103,8 +106,8 @@ daily basis to establish secure connections to their banks, e-commerce sites,
 e-mail servers, and the cloud. 
 
 ### History
-_**Why History? Isn't it boring and just a collection of names, dates and events?**_<br/>
-I used to think so too. However, history of public key cryptography has
+**[Q]** _**Why History? Isn't it boring and just a collection of names, dates and events?**_<br/>
+**[A]** I used to think so too. However, history of public key cryptography has
 some valuable lessons for our present and future. It gives you the motivation 
 to solve new problems, identify patterns, and contribute to the world of 
 cryptography. [Diffie-Hellman](diffie-hellman-key-exchange.html) protocol or [RSA](#what-is-rsa) 
@@ -170,8 +173,8 @@ Yes!
 > For some weird reason, the full PDF doesn't load in Chrome. Works in Mozilla 
 > Firefox and Safari.
 
-_**Have you read them?**_<br/>
-Not yet, it's in my bucket list
+**[Q]** _**Have you read them?**_<br/>
+**[A]** Not yet, it's in my bucket list
 
 ### What's private key cryptography?
 In Private key cryptography, both parties must hold on to a *matching private 
@@ -210,9 +213,9 @@ In a typical situation:
 Even in the digital age, private key encryption on its own struggles with key 
 distribution. 
 
-##### _**How's asymmetric different from symmetric cryptography?**_
-In symmetric cryptography, unscrambling process is simply the opposite of 
-scrambling. For example, the Enigma machine uses a certain key setting to 
+**[Q]** _**How's asymmetric different from symmetric cryptography?**_<br/>
+**[A]** In symmetric cryptography, unscrambling process is simply the opposite 
+of scrambling. For example, the Enigma machine uses a certain key setting to 
 encipher a message, and the receiver uses an identical machine in the same key 
 setting to decipher it. Both sender and receiver effectively have equivalent 
 knowledge, and they both use the same key to encrypt and decrypt. Their 
@@ -225,7 +228,7 @@ In an asymmetric cipher, if Alice knows the encryption key, she can encrypt a
 message, but she cannot decrypt a message. In order to decrypt, Alice must 
 have the decryption key. 
 
-**Hold on a minute! I just read the public key cryptography 
+**[Q]** **Hold on a minute! I just read the public key cryptography 
   [wiki](https://en.wikipedia.org/wiki/Public-key_cryptography) article and I 
   found this:**
 
@@ -235,8 +238,8 @@ have the decryption key.
 **Diffie-Hellman is used to exchange a common shared key, that's symmetric! Why
 is it a public key algorithm??**
 
-Sharp observation. Diffie-Hellman protocol belongs to a public-key technology.
-It is an asymmetric technology used to negotiate symmetric keys.
+**[A]** Sharp observation. Diffie-Hellman protocol belongs to a public-key 
+technology. It is an asymmetric technology used to negotiate symmetric keys.
 Here's the basic functionality:
 
 * Alice and Bob publicly agree to use a modulus `p` and base `g`
@@ -251,8 +254,8 @@ Alice's private key `a` and Bob's private key `b` was kept private.
 Hence, this has the context of being a public key cryptography in which both the
 parties have a pair of public and private keys.
 
-##### _**While we're on DHKE, how does Diffie-Hellman Key Exchange work?**_
-When I started to write this article, I thought I could give a brief explanation
+**[Q]** _**While we're on DHKE, how does Diffie-Hellman Key Exchange work?**_<br/>
+**[A]** When I started to write this article, I thought I could give a brief explanation
 of Diffie-Hellman Key Exchange and the discrete logarithm problem. 
 But the beauty of number theory, hard mathematical problems, properties of prime
 numbers is such that, it's injustice to merely state the protocol 
@@ -260,8 +263,8 @@ and not explain how math works. It's not just modulo arithmetic and large
 numbers. It deserves it's own page and explanation.
 Here's an article dedicated to [Diffie-Hellman Key Exchange]({{site.baseurl}}/security/diffie-hellman-key-exchange.html).
 
-##### You just said we needed asymmetric encryption because secret key distribution is a problem. But DHKE solved it right?
-DHKE is an asymmetric technology used to exchange symmetric keys. Both
+**[Q]** _**You just said we needed asymmetric encryption because secret key distribution is a problem. But DHKE solved it right?**_<br/>
+**[A]** DHKE is an asymmetric technology used to exchange symmetric keys. Both
 parties still had to use the same key to unlock a piece of information.
 * Imagine a bank that needs to secure transactions with customers. If there
 are 100,000 customers, the bank would need to store 100,000 keys and send
@@ -277,8 +280,8 @@ widely used for secure data transmission. Strenth of RSA lies in the practical
 difficulty of "factoring problem". RSA has been the industry standard for 
 public key cryptography for many years now. 
 
-_**Why are we just discussing RSA? What about DSA, ECDSA, Ed25519?**_<br/>
-RSA keys are the most widely used and better known. RSA has been around longer 
+**[Q]** _**Why are we just discussing RSA? What about DSA, ECDSA, Ed25519?**_<br/>
+**[A]** RSA keys are the most widely used and better known. RSA has been around longer 
 than others, and people trust it more because of the significant time it has
 spent in the open world. **The longer an algorithm stays in open for academic
 studies, strength analysis and deep scrutiny by security community, the higher
@@ -286,8 +289,8 @@ the trust**. Anyway, there is some information available in the
 [Additional resources](#additional-resources) section for those who like 
 closure.
 
-##### _How does RSA work?_
-Here's a brief and quick summary of RSA:
+**[Q]** _**How does RSA work?**_<br/>
+**[A]** Here's a brief and quick summary of RSA:
 * Choose two large prime numbers `p` and `q` and calulate their product `n = pq`
 * Calculate _φ(pq) = (p - 1)(q - 1)_ and chooses a number `e` relatively 
 prime(coprime) to _φ(pq)_. 
@@ -420,11 +423,11 @@ authority or self-signed.
 ASN.1 schemas
 * PEM is nothing more than a base64-encoded DER
 
-***(...yawning) To hell with it. I didn't understand a thing. What's all this 
+**[Q]** ***(...yawning) To hell with it. I didn't understand a thing. What's all this 
 boring theory? I skipped over and just scrolled past all those boring words. 
 Why do I need this?***<br/>
 
-Yeah, it's kind of boring and doesn't make much sense at first. When you
+**[A]** Yeah, it's kind of boring and doesn't make much sense at first. When you
 are learning *A*, *B*, *C*...*Z* for the first time, does it make much sense?
 
 *Why is this written as A and not as ![](https://upload.wikimedia.org/wikipedia/commons/7/7d/Rune-Yr.png)*<br/>
@@ -476,8 +479,8 @@ Until she does that, Alice's emails are secure.
 ![Diagram illustrating how PGP works](https://upload.wikimedia.org/wikipedia/commons/4/4d/PGP_diagram.svg "Diagram illustrating how PGP works")
 Image credits: [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:PGP_diagram.svg)
 
-_**I've heard PGP is dead. Is that true?**_<br/>
-On 17 May 2018, Wired declared "[PGP is dead](https://www.wired.co.uk/article/efail-pgp-vulnerability-outlook-thunderbird-smime)".
+**[Q]** _**I've heard PGP is dead. Is that true?**_<br/>
+**[A]** On 17 May 2018, Wired declared "[PGP is dead](https://www.wired.co.uk/article/efail-pgp-vulnerability-outlook-thunderbird-smime)".
 Without describing [Efail](https://efail.de/) vulnerability technically, they
 start with their complaint that PGP was first developed in 1991 and science of 
 cryptography has advanced dramatically since then. 
@@ -621,10 +624,10 @@ dgst: perform digest operations
 -signature: The actual signature to verify
 ```
 
-_**Can I encrypt a file with my private key and decrypt using public key?**_<br/>
-Just think of this operation and see if it makes sense. Encrypting with your 
-private key doesn't make much sense when the decryption key is well known and 
-public. You might as well give the file in plaintext to the world.
+**[Q]** _**Can I encrypt a file with my private key and decrypt using public key?**_<br/>
+**[A]** Just think of this operation and see if it makes sense. Encrypting with 
+your private key doesn't make much sense when the decryption key is well known 
+and public. You might as well give the file in plaintext to the world.
 
 ### Additional resources
 

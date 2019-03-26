@@ -121,10 +121,10 @@ the keying material for decryption)
 * You may use any cipher listed by `$ openssl list-cipher-algorithms` 
 for symmetric encryption
 
-_**Some articles mention generating a 256 bit random key and not a password. 
+**[Q]** _**Some articles mention generating a 256 bit random key and not a password. 
 What is this password and key derivation? Are you sure?**_<br/>
 
-Right! Some articles refer to the 256-bit random material as _key_ which is
+**[A]** Right! Some articles refer to the 256-bit random material as _key_ which is
 misleading and creates confusion. It leads us to think that we will 
 generate a 256 bit random _key_ and OpenSSL will use it to perform a 
 symmetric encryption. However, we are using a secret password (length is 

@@ -60,21 +60,21 @@ This is where we need a _"Trusted Third Party/Certificate Authority/CA)"_.
 CA computes a hash over all the certificate data (_**except signature**_) and 
 encrypts the hash with it's private key.
 
-_**Why was the signature excluded from hash?**_<br/>
-CA doesn't have a time machine to go into the future and see what signature
+**[Q]** _**Why was the signature excluded from hash?**_<br/>
+**[A]** CA doesn't have a time machine to go into the future and see what signature
 would be generated. If it did, it would sign the entire certificate including
 the future signature.
 >FYI: Encrypting the hash is called signing. This is how a signature is 
 >generated. We can't know the signature beforehand to sign it.
 
-_**So, the signature is delivered separately to clients?**_<br/>
-No, it's part of the certificate. All of the data you need to validate the 
+**[Q]** _**So, the signature is delivered separately to clients?**_<br/>
+**[A]** No, it's part of the certificate. All of the data you need to validate the 
 server's identity is contained in the certificate (including the signature). 
 So, you need to remove the signature field before computing the hash and 
 verifying. 
 
-_**What data is signed?**_?<br/>
-Entity's identity, validity, extensions, public key and a lot of 
+**[Q]** _**What data is signed?**_?<br/>
+**[A]** Entity's identity, validity, extensions, public key and a lot of 
 other data related to entity is signed by the CA.
 If any parts of the certificate are modified by a man-in-the-middle, the CA's 
 signature will not validate. 
@@ -203,10 +203,10 @@ need to possess the following:
    > PEM (Privacy Enhanced Mail) is nothing more than a base64-encoded DER 
     (Distinguished Encoding Rules)
 
-   ***I thought a server has one certificate, what are these other certificates 
+   **[Q]** ***I thought a server has one certificate, what are these other certificates 
    that we're downloading?***
 
-   You are right, server always needs to show just one certificate. The other 
+   **[A]** You are right, server always needs to show just one certificate. The other 
    certificates are the intermediary and probably root CA certificates. We need 
    those to get the intermediary public keys (Issuer's public key)
 
