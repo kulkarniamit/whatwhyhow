@@ -94,7 +94,7 @@ formats of public key.
 **[Q]** _**How can I use it?**_<br/>
 **[A]** Interestingly enough, there's a very high chance that you've already
 used public key cryptography. 
-* Have you booked a holiday/flight on a reputed travel company webstite? 
+* Have you booked a holiday/flight on a reputed travel company website? 
 * Have you ever purchased something from amazon.com?
 * Did a google search?
 
@@ -121,7 +121,7 @@ Publicly introduced by
 [Martin Hellman](https://ee.stanford.edu/~hellman/) and 
 [Ralph Merkle](http://www.merkle.com/) in 1976. They also played a crucial role 
 in ending the monopoly on cryptography. We may take it for granted now but this 
-was a crucial defining moment in the history. Imagine a tehcnically armed 
+was a crucial defining moment in the history. Imagine a technically armed 
 g-o-v-e-r-n-m-e-n-t that can read emails, whatsapp messages, text messages, 
 photos, bank transactions, social life, credit card purchases, etc. It would 
 lead to an efficient version of 
@@ -291,7 +291,7 @@ closure.
 
 **[Q]** _**How does RSA work?**_<br/>
 **[A]** Here's a brief and quick summary of RSA:
-* Choose two large prime numbers `p` and `q` and calulate their product `n = pq`
+* Choose two large prime numbers `p` and `q` and calculate their product `n = pq`
 * Calculate _φ(pq) = (p - 1)(q - 1)_ and chooses a number `e` relatively 
 prime(coprime) to _φ(pq)_. 
 * Calculate the modular inverse `d` of `e` modulo _φ(pq)_. 
