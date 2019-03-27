@@ -673,6 +673,7 @@ Looks weird and creates a lot of extra space
 
 #feeds-row ul {
     list-style: none;
+    margin-left: 0px;
 }
 
 #feeds-row > ul > li {
@@ -681,4 +682,15 @@ Looks weird and creates a lot of extra space
 
 #feeds-row a {
     text-decoration: none;
+}
+
+.post-title {
+    line-height: 1.2;
+}
+
+@media screen and (max-width: 480px) {
+    /* Target phones */
+  body, .markdown-body {
+    font-size:1.112em;
+  }
 }
