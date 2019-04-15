@@ -6,9 +6,14 @@
 .markdown-body {
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
-  color: #333;
+/* #333 seems light on large desktop monitors */
+/*  color: #333; */
+  color: #000;
   font-family: "Computer Modern Serif", "Helvetica Neue", Helvetica, "Segoe UI", Arial, freesans, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-  font-size: 16px;
+
+/* 16px seems small on large monitors */ 
+/*  font-size: 16px; */
+  font-size: 1.076em;
   line-height: 1.6;
   word-wrap: break-word;
 }
