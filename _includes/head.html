@@ -2,9 +2,17 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://fonts.googleapis.com/css?family=Abril+Fatface|Merriweather:300&display=swap" rel="stylesheet">
   <link rel="shortcut icon" type="image/png" href="{{site.baseurl}}/favicon.png">
+  <!-- rawgit.com is reaching EOL ->
+  <!--
   <link rel="stylesheet" type="text/css" href="https://cdn.rawgit.com/dreampulse/computer-modern-web-font/master/fonts.css">
+  -->
+  <link rel="stylesheet" media="screen" href="https://fontlibrary.org/face/cmu-serif" type="text/css"/>
+<!--
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+-->
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
   {%- seo -%}
   <link rel="stylesheet" href="{{ "/assets/main.css" | relative_url }}">
   {%- feed_meta -%}
@@ -20,7 +28,7 @@
   <meta name="twitter:card" content="summary_large_image">
 -->
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="{{page.title}}" />
+  <meta name="twitter:title" content="{{page.title | strip_html | strip}}" />
   <meta name="twitter:description" content="{{page.description}}" />
 
     {% assign link = {{page.twitter_image}} %}

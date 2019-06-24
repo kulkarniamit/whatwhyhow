@@ -9,7 +9,7 @@
 /* #333 seems light on large desktop monitors */
 /*  color: #333; */
   color: #000;
-  font-family: "Computer Modern Serif", "Helvetica Neue", Helvetica, "Segoe UI", Arial, freesans, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  font-family: "CMUSerifRoman", "Helvetica Neue", Helvetica, "Segoe UI", Arial, freesans, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
 
 /* 16px seems small on large monitors */ 
 /*  font-size: 16px; */
@@ -29,6 +29,8 @@
 
 .markdown-body strong {
   font-weight: bold;
+  /* The new font style requires explicit change of font for italics and bold */
+  font-family: "CMUSerifItalic";
 }
 
 .markdown-body h1 {
@@ -134,6 +136,7 @@
   line-height: 1.1;
   /* Compensate for computer modern font spacing */
   letter-spacing: -0.045em;
+  font-family: "CMUSerifBold";
 }
 
 .markdown-body h1 {
@@ -410,6 +413,7 @@ Looks weird and creates a lot of extra space
   padding: 0 15px;
   color: #777;
   border-left: 4px solid #ddd;
+  font-family: "CMUSerifItalic";
 }
 
 .markdown-body blockquote>:first-child {
@@ -433,6 +437,7 @@ Looks weird and creates a lot of extra space
 
 .markdown-body table th {
   font-weight: bold;
+  font-family: "CMUSerifItalic";
 }
 
 .markdown-body table th,
@@ -699,3 +704,21 @@ Looks weird and creates a lot of extra space
     font-size:1.112em;
   }
 }
+
+.home ol li{
+    padding: 0.2em 0 0.2em 0;
+}
+
+.home li a {
+    font-family: 'Merriweather', serif;
+}
+.home ul > li {
+    font-size: 2em;
+}
+.home ol > li {
+    font-size: 0.5em;
+}
+.home ul li h3 {
+    font-family: 'Abril Fatface', cursive;
+}
+
