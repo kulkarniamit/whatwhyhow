@@ -981,6 +981,15 @@ Example macro:
 (gdb) macro expand FOO(3, 4)
 expands to: (3+4)/(3*4*bar(3))
 ```
+#### Printing source of a linked function
+Lets say we wanted to know the source of a function `process_encrypted_data` in current context
+
+```bash
+(gdb) info line *process_encrypted_data
+Line 825 of "/src/aes/encryption.h"
+   starts at address 0x5852b9 <process_encrypted_data>
+   and ends at 0x5852c1 <process_encrypted_data+8>.
+```
 
 #### Printing the type of a variable/function
 
