@@ -1520,6 +1520,14 @@ Essentially, you're asking if `gdb` can snatch back the characters sent to
 external devices or stdout. The answer is no. Lets not run wild with our 
 imagination of a time machine.
 
+##### [Q] Does it work in multithreaded environment?
+I couldn't find any official documentation about the support for checkpoints in a multithreaded environment.
+But my experiments conclude that it's not posssible.
+```bash
+(gdb) checkpoint                                                                                                                                                             
+checkpoint: can't checkpoint multiple threads. 
+```
+
 #### Using checkpoints in GDB
 ```c
 /* Source code */
@@ -1594,6 +1602,85 @@ Switching to process 25880
 ```
 
 > Use `delete checkpoint <checkpoint-id>` to delete a checkpoint
+
+#### Convenience variables
+
+GDB provides convenience variables that can be used to hold on to a value and refer to it later. These variables exist entirely within GDB; they are not part of the program, and setting a convenience variable has no direct effect on further execution of the program. 
+* Convenience variables are prefixed with `$`
+* Any name preceded by `$` can be used for a convenience variable, unless it is one of the predefined machine-specific register names
+
+```c
+$ cat multi_function_program.c 
+#include <stdio.h>
+
+void foo(int *x){
+  *x = 100;
+}
+void bar(int *x){
+  *x = 1000;
+}
+int main(){
+  int *a; 
+  int i = 10;
+  foo(&i);
+  bar(&i);
+  printf("i: %d\n", i);
+}
+```
+
+```bash
+$ gdb -q multi_function_program
+Reading symbols from multi_function_program...done.
+(gdb) b main
+Breakpoint 1 at 0x40055d: file multi_function_program.c, line 11.
+(gdb) b foo
+Breakpoint 2 at 0x400535: file multi_function_program.c, line 4.
+(gdb) b bar
+Breakpoint 3 at 0x400549: file multi_function_program.c, line 7.
+(gdb) r
+Starting program: multi_function_program 
+
+Breakpoint 1, main () at multi_function_program.c:11
+11	  int i = 10;
+(gdb) n
+12	  foo(&i);
+(gdb) set $old_i = i
+(gdb) p $old_i
+$1 = 10
+(gdb) n
+
+Breakpoint 2, foo (x=0x7fffffffdc7c) at multi_function_program.c:4
+4	  *x = 100;
+(gdb) p $old_i
+$2 = 10
+(gdb) n
+5	}
+(gdb) 
+main () at multi_function_program.c:13
+13	  bar(&i);
+(gdb) p $old_i
+$3 = 10
+(gdb) n
+
+Breakpoint 3, bar (x=0x7fffffffdc7c) at multi_function_program.c:7
+7	  *x = 1000;
+(gdb) 
+8	}
+(gdb) 
+main () at multi_function_program.c:14
+14	  printf("i: %d\n", i);
+(gdb) 
+i: 1000
+15	}
+(gdb) p i
+$4 = 1000
+(gdb) p $old_i
+$5 = 10
+(gdb) q
+```
+
+The old faithful convenience variable will be with you throughout your program in any function in any thread.
+Since you assign a static value to it, it doesn't change when the source value/pointer changes. 
 
 
 ### Altering the flow
