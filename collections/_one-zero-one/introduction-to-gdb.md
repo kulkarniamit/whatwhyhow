@@ -1034,6 +1034,84 @@ type = void *
 type = unsigned int (unsigned int, unsigned int)
 ```
 
+#### Printing thread information
+While debugging a multithreaded program, it's helpful to annotate and know the current thread of execution.
+We can also set the thread number on auto-display to keep track of thread number being debugged.
+
+* To set thread number on auto-display: `(gdb) display $_thread`
+* To set a name for a thread: `(gdb) thread name <helpful_thread_name>`
+
+> `$_thread` is known as a convenience variable in gdb
+
+Lets consider a simple multithreaded program compiled with `-lpthread`
+```c
+#include <stdio.h> 
+#include <stdlib.h> 
+#include <unistd.h>  //Header file for sleep(). man 3 sleep for details. 
+#include <pthread.h> 
+  
+void *process_job(void *vargp) {
+    sleep(1); 
+    printf("Processing a job in thread... \n"); 
+    return NULL; 
+} 
+   
+int main() { 
+    pthread_t thread_id; 
+    printf("Before Thread\n"); 
+    pthread_create(&thread_id, NULL, process_job, NULL); 
+    pthread_join(thread_id, NULL); 
+    printf("After Thread\n"); 
+}
+```
+Debugging with gdb
+```c
+$ gdb -q multithreadingsample
+Reading symbols from multithreadingsample...done.
+(gdb) b main
+Breakpoint 1 at 0x40070c: file multithreadingsample.c, line 14.
+(gdb) b process_job 
+Breakpoint 2 at 0x4006e9: file multithreadingsample.c, line 7.
+(gdb) b 17
+Breakpoint 3 at 0x400742: file multithreadingsample.c, line 17.
+(gdb) display $_thread
+(gdb) r
+Starting program: /tmp/multithreadingsample 
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+
+Breakpoint 1, main () at multithreadingsample.c:14
+14	    printf("Before Thread\n"); 
+1: $_thread = 1
+(gdb) thread name MAINTHREAD
+(gdb) c
+Continuing.
+Before Thread
+[New Thread 0x7ffff6f5c700 (LWP 3022)]
+[Switching to Thread 0x7ffff6f5c700 (LWP 3022)]
+
+Breakpoint 2, process_job (vargp=0x0) at multithreadingsample.c:7
+7	    sleep(1); 
+1: $_thread = 2
+(gdb) thread name JOBTHREAD
+(gdb) info threads 
+  Id   Target Id         Frame 
+* 2    Thread 0x7ffff6f5c700 (LWP 3022) "JOBTHREAD" process_job (vargp=0x0) at multithreadingsample.c:7
+  1    Thread 0x7ffff7fdb780 (LWP 3017) "MAINTHREAD" 0x00007ffff784b65b in pthread_join ...
+(gdb) c
+Continuing.
+Processing a job in thread... 
+[Thread 0x7ffff6f5c700 (LWP 3022) exited]
+[Switching to Thread 0x7ffff7fdb780 (LWP 3017)]
+
+Breakpoint 3, main () at multithreadingsample.c:17
+17	    printf("After Thread\n"); 
+1: $_thread = 1
+(gdb) info threads 
+  Id   Target Id         Frame 
+* 1    Thread 0x7ffff7fdb780 (LWP 3017) "MAINTHREAD" main () at multithreadingsample.c:17
+```
+
 #### Exploring expression or types
 Another way of examining values of expressions and type information is through 
 the Python extension command `explore` (available only if the GDB build is 
