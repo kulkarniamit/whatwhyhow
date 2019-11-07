@@ -954,6 +954,54 @@ $14 = 0x00000003
 (gdb) p/x $pc
 $15 = 0x55555555468a
 ```
+#### Printing the value of an enum
+If a function returns an enum value, printing the enum doesn't show the associated number by default.
+For example:
+```c
+#include <stdio.h>
+
+typedef enum {
+  RC_OK = 0,
+  RC_INSUFFICIENT_BUFFER = 256,
+  RC_IO_ERROR,
+  RC_ALLOC_FAIL,
+  RC_FORMAT,
+  RC_LOW_MEMORY
+} rc_t;
+
+rc_t foo(){
+  return RC_LOW_MEMORY;
+}
+int main()
+{
+    rc_t rc;
+    rc = foo();
+    if (rc != RC_OK) {
+      printf("foo() failed with error: %d\n", rc);
+    }
+    return 0;
+}
+```
+
+```c
+(gdb) r
+Starting program: /tmp/enum-example 
+Breakpoint 1, main () at enum-example.c:18
+18	    rc = foo();
+(gdb) n
+19	    if (rc != RC_OK) {
+(gdb) p rc
+$1 = RC_LOW_MEMORY
+(gdb) ptype rc
+type = enum {RC_OK, RC_INSUFFICIENT_BUFFER = 256, RC_IO_ERROR, RC_ALLOC_FAIL, RC_FORMAT, RC_LOW_MEMORY}
+```
+
+Instead of counting from 256 to `RC_LOW_MEMORY`, we can print it using `p/d RC_LOW_MEMORY`
+```c
+(gdb) p/d rc
+$2 = 260
+```
+
 
 #### Printing source of a macro
 Consider a case in which 
