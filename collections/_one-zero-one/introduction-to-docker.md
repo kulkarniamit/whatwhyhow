@@ -19,6 +19,7 @@ hashtags: docker, 101, docker101, containers
 * [Docker Hub](#docker-hub)
 * [Private Registry](#private-registry)
 * [Storing data](#storing-data)
+* [Save and load images](#save-and-load-images)
 * [Additional resources](#additional-resources)
 * [References](#references)
 * [Credits](#credits)
@@ -1240,6 +1241,35 @@ DRIVER              VOLUME NAME
 There are some more interesting topics like *Orchestration*, *Testing*, 
 *Swarm*, *Services*, *Security* etc but that's may be for a 201 article. 
 This is 101.
+
+### Save and load images
+If we wish to create a portable image that can be distributed and used in remote machines, we can use save and load functionality in docker.
+
+#### Export an image to a `tar.gz`
+```bash
+# Example
+$ docker images
+REPOSITORY                        TAG                 IMAGE ID            CREATED             SIZE
+sample-service-image              v0                  acc8efacbbea        2 months ago        3.89GB
+
+$ docker save sample-service-image | gzip > /tmp/sample-service-image.tar.gz
+
+# Send the file to a remote destination
+$ scp -i ~/.ssh/id_rsa /tmp/sample-service-image.tar.gz <remote_user>@<remote_host>:/tmp/
+```
+#### Load an image from a compressed file
+```bash
+# Remote host with compressed image file
+$ docker load < /tmp/sample-service-image.tar.gz
+174f56854903: Loading layer [==================================================>]  211.7MB/211.7MB
+...
+977b3f408ce3: Loading layer [==================================================>]  2.267GB/2.267GB
+Loaded image: sample-service-image:v0
+
+$ docker images
+REPOSITORY             TAG                 IMAGE ID            CREATED             SIZE
+sample-service-image   v0                  acc8efacbbea        2 months ago        3.89GB
+```
 
 ### Additional resources
 * [Play with docker classroom](https://training.play-with-docker.com/alacart/#beginner)
